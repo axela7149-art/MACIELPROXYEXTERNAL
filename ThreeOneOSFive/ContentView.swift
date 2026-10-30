@@ -744,12 +744,10 @@ struct ContentView: View {
     }
 
     private var hasUnmappedLegacyPatch: Bool {
-        guard DevicePatchService.latestReceipt(
-            projectID: BYPASS7PatchCatalog.legacySharedHighSensitivityID
-        ) != nil else { return false }
-        return !BYPASS7PatchCatalog.definitions
-            .filter(\.isHighSensitivity)
-            .contains { patchItem(for: $0)?.id == BYPASS7PatchCatalog.legacySharedHighSensitivityID }
+        // Older builds used one shared HS identifier. Its receipt can remain on a
+        // device after the catalog is replaced, but it must not disable the new
+        // bundled patches; PatchTransaction can safely handle the next apply.
+        false
     }
 }
 
