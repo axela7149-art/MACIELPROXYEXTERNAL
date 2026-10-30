@@ -35,14 +35,8 @@ struct ContentView: View {
                 .fill(AppTheme.accent.opacity(0.08))
                 .frame(height: 0.5)
 
-            Group {
-                if selectedTab == .patches {
-                    aimsScreen
-                } else {
-                    antbanScreen
-                }
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            aimsScreen
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
 
             bottomNavigation
         }
