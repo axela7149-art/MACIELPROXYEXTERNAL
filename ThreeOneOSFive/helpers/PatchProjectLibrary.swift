@@ -145,6 +145,9 @@ enum PatchProjectLibrary {
             var seededIDs = Set(UserDefaults.standard.stringArray(
                 forKey: bundledPresetSeededIDsKey
             ) ?? [])
+            // Bundled packages are authoritative: clear their old seed markers so a
+            // replacement payload is installed even after an app update.
+            seededIDs.subtract(bundledIDs)
             for bundledURL in bundledURLs.sorted(by: { $0.lastPathComponent < $1.lastPathComponent }) {
                 do {
                     let bundledBytes = try Data(contentsOf: bundledURL)

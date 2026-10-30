@@ -332,22 +332,6 @@ struct ContentView: View {
                     .frame(height: 0.5)
                     .padding(.horizontal, 12)
 
-                Text("TEXTURAS")
-                    .font(.system(size: 12, weight: .bold))
-                    .tracking(1.5)
-                    .foregroundStyle(AppTheme.accent)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.horizontal, 12)
-                    .padding(.top, 12)
-                    .padding(.bottom, 5)
-
-                patchRows(for: BYPASS7PatchCatalog.textureDefinitions)
-
-                Rectangle()
-                    .fill(AppTheme.accent.opacity(0.07))
-                    .frame(height: 0.5)
-                    .padding(.horizontal, 12)
-
                 Text("RESETAR CONTA CONVIDADO")
                     .font(.system(size: 12, weight: .bold))
                     .tracking(1.5)
@@ -1043,101 +1027,35 @@ private struct BYPASS7PatchDefinition: Identifiable {
 }
 
 private enum BYPASS7PatchCatalog {
+    // Legacy ID retained only to recognize stale installs during migration.
     static let legacySharedHighSensitivityID = UUID(
         uuidString: "C11E1C4D-CAC4-4FC7-ACF2-4E6BECA09CEB"
     )!
 
     static let definitions: [BYPASS7PatchDefinition] = [
         BYPASS7PatchDefinition(
+            id: "hs-cearense",
+            displayName: "HS CEARENSE",
+            matchNames: ["HS CEARENSE FF NORMAL", "HS CEARENSE"],
+            offStatus: "Desativado",
+            offStatusIcon: "xmark.circle",
+            isHighSensitivity: true
+        ),
+        BYPASS7PatchDefinition(
             id: "hs-pescoco",
             displayName: "HS PESCOÇO + ANTENA",
             matchNames: ["HS PESCOÇO + ALTO FF NORMAL", "HS PESCOÇO + ANTENA", "HS PESCOÇO + ANTENA"],
-            offStatus: "Estado não verificado",
-            offStatusIcon: "questionmark.circle",
+            offStatus: "Desativado",
+            offStatusIcon: "xmark.circle",
             isHighSensitivity: true
         ),
         BYPASS7PatchDefinition(
             id: "hs-peito",
             displayName: "HS PEITO + ANTENA",
             matchNames: ["HS PEITO 80% + ANTENA FF NORMAL", "HS PEITO + ANTENA"],
-            offStatus: "Estado não verificado",
-            offStatusIcon: "questionmark.circle",
+            offStatus: "Desativado",
+            offStatusIcon: "xmark.circle",
             isHighSensitivity: true
-        ),
-        BYPASS7PatchDefinition(
-            id: "menu-antban",
-            displayName: "MACIEL MENU FULL FUNÇÕES",
-            matchNames: [
-                "MACIEL MENU FULL FUNÇÕES",
-                "MACIEL PAINEL VIP",
-                "MACIELPAINELVIP",
-                "MENU BYPASS7 ANTBAN BY MACIEL",
-                "MENU BYPASS7 ANTBAN BY MACIEL.3105"
-            ],
-            offStatus: "Desativado",
-            offStatusIcon: "xmark.circle",
-            isHighSensitivity: true,
-            synchronizesWorkspaceBeforeApply: false
-        ),
-        BYPASS7PatchDefinition(
-            id: "aimhead-esp",
-            displayName: "AIMHEAD + ESP",
-            matchNames: ["AIMHEAD + ESP"],
-            offStatus: "Desativado",
-            offStatusIcon: "xmark.circle",
-            isHighSensitivity: true,
-            synchronizesWorkspaceBeforeApply: false
-        ),
-        BYPASS7PatchDefinition(
-            id: "aimneck-esp",
-            displayName: "AIMNECK + ESP",
-            matchNames: ["AIMNECK + ESP"],
-            offStatus: "Desativado",
-            offStatusIcon: "xmark.circle",
-            isHighSensitivity: true,
-            synchronizesWorkspaceBeforeApply: false
-        ),
-        BYPASS7PatchDefinition(
-            id: "aimsilent-esp",
-            displayName: "AIMSILENT + ESP",
-            matchNames: ["AIMSILENT + ESP"],
-            offStatus: "Desativado",
-            offStatusIcon: "xmark.circle",
-            isHighSensitivity: true,
-            synchronizesWorkspaceBeforeApply: false
-        )
-    ]
-
-    static let textureDefinitions: [BYPASS7PatchDefinition] = [
-        BYPASS7PatchDefinition(
-            id: "texture-ze-pilintra-personagem-maro",
-            displayName: "ZE PILINTRA - PERSONAGEM MARO",
-            matchNames: ["ZE PILINTRA - PERSONAGEM MARO"],
-            offStatus: "Desativado",
-            offStatusIcon: "xmark.circle",
-            isHighSensitivity: false,
-            synchronizesWorkspaceBeforeApply: false,
-            requiresActivationPassword: false
-        ),
-        BYPASS7PatchDefinition(
-            id: "texture-mandela-alok-despertado",
-            displayName: "MANDELA - ALOK DESPERTADO",
-            matchNames: ["MANDELA - ALOK DESPERTADO"],
-            offStatus: "Desativado",
-            offStatusIcon: "xmark.circle",
-            isHighSensitivity: false,
-            synchronizesWorkspaceBeforeApply: false,
-            requiresActivationPassword: false
-        ),
-        BYPASS7PatchDefinition(
-            id: "texture-morte-martinsxits",
-            displayName: "MORTE - MARO",
-            matchNames: ["MORTE-MARTINSXITS", "MORTE | MARTINSXITS"],
-            offStatus: "Desativado",
-            offStatusIcon: "xmark.circle",
-            isHighSensitivity: false,
-            synchronizesWorkspaceBeforeApply: false,
-            requiresActivationPassword: false
         )
     ]
 
@@ -1164,7 +1082,7 @@ private enum BYPASS7PatchCatalog {
     ]
 
     static var allDefinitions: [BYPASS7PatchDefinition] {
-        definitions + textureDefinitions + guestResetDefinitions
+        definitions + guestResetDefinitions
     }
 }
 
