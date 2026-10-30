@@ -1,0 +1,60 @@
+name: Build MACIELPROXYEXTERNAL
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: macos-14
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Select Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: Build unsigned iOS app
+        run: |
+          set -euo pipefail
+          mkdir -p build/DerivedData/Build/Products/Release-iphoneos
+          xcodebuild \
+            -project ThreeOneOSFive.xcodeproj \
+            -target 3105 \
+            -configuration Release \
+            -sdk iphoneos \
+            CONFIGURATION_BUILD_DIR="$PWD/build/DerivedData/Build/Products/Release-iphoneos" \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            build | tee build/xcodebuild.log
+
+      - name: Verify bundled logo and patches
+        run: |
+          set -euo pipefail
+          APP_PATH="build/DerivedData/Build/Products/Release-iphoneos/3105.app"
+          test -d "$APP_PATH"
+          test -f "$APP_PATH/Info.plist"
+          test "$(find "$APP_PATH/OfficialPatches" -maxdepth 1 -type f -name '*.3105' | wc -l | tr -d ' ')" = "3"
+          /usr/libexec/PlistBuddy -c 'Print :CFBundleDisplayName' "$APP_PATH/Info.plist" | grep -qx 'MACIELPROXYEXTERNAL'
+
+      - name: Package unsigned IPA
+        run: |
+          set -euo pipefail
+          mkdir -p build/ipa/Payload
+          ditto build/DerivedData/Build/Products/Release-iphoneos/3105.app build/ipa/Payload/MACIELPROXYEXTERNAL.app
+          (cd build/ipa && /usr/bin/zip -qry MACIELPROXYEXTERNAL.ipa Payload)
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: MACIELPROXYEXTERNAL-unsigned-ipa
+          path: |
+            build/ipa/MACIELPROXYEXTERNAL.ipa
+            build/xcodebuild.log
