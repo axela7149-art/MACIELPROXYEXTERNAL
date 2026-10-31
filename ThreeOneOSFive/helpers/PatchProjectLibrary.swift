@@ -39,6 +39,21 @@ enum PatchProjectLibrary {
     private static let authorCopiesDirectoryName = ".AuthorCopies"
     private static let originsDirectoryName = ".Origins"
     private static let bundledPresetSeededIDsKey = "bypass7.seeded.3105.packageIDs.v2"
+    // IDs from the previous official catalog. The current Reset Guest package is
+    // intentionally not included here, so user data from the old catalog is
+    // removed while the four current bundled packages are preserved.
+    private static let retiredOfficialPackageIDs: Set<String> = [
+        "C11E1C4D-CAC4-4FC7-ACF2-4E6BECA09CEB",
+        "7D270B7A-7411-42A0-AAF4-EB86F9E35EA1",
+        "3F938F41-6956-49D8-92D7-889E8FCA48DA",
+        "D6C72A83-C4D6-41EE-8FA2-5D9FB3B7ECF8",
+        "FA75AD67-3535-4F37-885C-FEF6A3E18979",
+        "7B4F5EA0-8875-46C9-A232-407F3DD0A924",
+        "BD46710F-2B2B-4182-B0F6-E3A4D3080489",
+        "5657E499-5DED-450B-BA72-254858F364D2",
+        "FC8812F3-73D4-4A0B-814A-A6A2ED8F3E5D",
+        "4261C603-8C9E-4CFD-BCBA-ADB1792405EF"
+    ]
 
     private enum ProtectedBundle {
         private static let magic = Data("MFSP1".utf8)
@@ -108,6 +123,16 @@ enum PatchProjectLibrary {
                 includingPropertiesForKeys: nil,
                 options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants]
             )
+            // Remove packages shipped by older builds. Do not remove arbitrary
+            // user imports: only the known previous official IDs are retired.
+            for url in localURLs where ["3105", "cache"].contains(url.pathExtension.lowercased()) {
+                guard let data = try? readPackage(at: url),
+                      let summary = try? PatchPackageCodec.inspect(data),
+                      retiredOfficialPackageIDs.contains(summary.packageID.uuidString)
+                else { continue }
+                try? fileManager.removeItem(at: url)
+                try? PatchKeyStore.delete(for: summary)
+            }
             // Older builds stored official packages as readable .3105 files.
             // Re-wrap only matching bundled IDs, leaving user-imported files intact.
             for url in localURLs where url.pathExtension.lowercased() == "3105" {
